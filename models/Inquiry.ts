@@ -12,7 +12,6 @@ const InquirySchema = new Schema(
 
     concernType: { type: String, required: true },
     preferredDate: { type: String },
-    preferredTime: { type: String },
     message: { type: String },
 
     status: {
@@ -24,6 +23,7 @@ const InquirySchema = new Schema(
   { timestamps: true }
 );
 
-const Inquiry = models.Inquiry || mongoose.model("Inquiry", InquirySchema);
+const Inquiry =
+  models.Inquiry || mongoose.model("Inquiry", InquirySchema);
 
 export default Inquiry;

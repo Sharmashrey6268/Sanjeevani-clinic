@@ -43,7 +43,7 @@ export default function AboutTherapist() {
 
               <div className="relative overflow-hidden rounded-[2rem] bg-white shadow-2xl">
                 <Image
-                  src="/images/therapist.jpg"
+                  src="/images/therapistt.jpg"
                   alt="Dr. Shruti Sharma"
                   width={520}
                   height={650}

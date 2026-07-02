@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPin, Phone, Menu } from "lucide-react";
+import { MapPin, Menu, Phone, X } from "lucide-react";
 import { siteConfig } from "@/data/site";
 import Logo from "./Logo";
 
@@ -16,49 +16,51 @@ const navItems = [
 
 export default function Header() {
   const [activeSection, setActiveSection] = useState("home");
+  const [isOpen, setIsOpen] = useState(false);
 
- useEffect(() => {
-  const handleScroll = () => {
-    const scrollPosition = window.scrollY + 140;
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 130;
+      let currentSection = "home";
 
-    let currentSection = "home";
+      navItems.forEach((item) => {
+        const section = document.getElementById(item.id);
 
-    navItems.forEach((item) => {
-      const section = document.getElementById(item.id);
+        if (section) {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
 
-      if (section) {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-
-        if (
-          scrollPosition >= sectionTop &&
-          scrollPosition < sectionTop + sectionHeight
-        ) {
-          currentSection = item.id;
+          if (
+            scrollPosition >= sectionTop &&
+            scrollPosition < sectionTop + sectionHeight
+          ) {
+            currentSection = item.id;
+          }
         }
-      }
-    });
+      });
 
-    setActiveSection(currentSection);
-  };
+      setActiveSection(currentSection);
+      setIsOpen(false);
+    };
 
-  handleScroll();
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
 
-  window.addEventListener("scroll", handleScroll);
-
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-green-100 bg-white/95 shadow-sm backdrop-blur-md">
-      <nav className="mx-auto flex h-24 w-full max-w-[1500px] items-center justify-between px-2 sm:px-4 lg:px-6">
-        <div className="flex flex-shrink-0 items-center">
-          <a href="#home" className="block">
-            <Logo />
-          </a>
-        </div>
+      <nav className="mx-auto flex h-20 w-full max-w-[1800px] items-center justify-between overflow-hidden px-3 sm:h-[88px] sm:px-5 lg:h-24 lg:px-8 2xl:px-14">
+       <a
+  href="#home"
+  className="block max-w-[210px] flex-shrink overflow-hidden sm:max-w-[300px] lg:max-w-none"
+  onClick={() => setIsOpen(false)}
+>
+  <Logo />
+</a>
 
-        <div className="hidden flex-1 items-center justify-center gap-8 xl:flex 2xl:gap-10">
+        <div className="hidden flex-1 items-center justify-center gap-6 xl:flex 2xl:gap-10">
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
 
@@ -66,7 +68,7 @@ export default function Header() {
               <a
                 key={item.id}
                 href={item.link}
-                className={`relative pb-2 text-[16px] font-semibold transition ${
+                className={`relative pb-2 text-sm font-bold transition 2xl:text-base ${
                   isActive
                     ? "text-green-700"
                     : "text-slate-700 hover:text-green-700"
@@ -87,9 +89,9 @@ export default function Header() {
         <div className="hidden items-center gap-3 xl:flex">
           <a
             href={siteConfig.phoneHref}
-            className="rounded-full bg-green-700 px-5 py-3 font-semibold text-white transition hover:bg-green-800"
+            className="inline-flex items-center justify-center rounded-full bg-green-700 px-5 py-3 text-sm font-bold text-white transition hover:bg-green-800 2xl:px-6 2xl:text-base"
           >
-            <Phone className="mr-2 inline h-4 w-4" />
+            <Phone className="mr-2 h-4 w-4" />
             Call Now
           </a>
 
@@ -97,9 +99,9 @@ export default function Header() {
             href={siteConfig.mapsHref}
             target="_blank"
             rel="noreferrer"
-            className="rounded-full border border-gray-200 bg-white px-5 py-3 font-semibold shadow-sm transition hover:bg-gray-50"
+            className="inline-flex items-center justify-center rounded-full border border-gray-200 bg-white px-5 py-3 text-sm font-bold text-slate-800 shadow-sm transition hover:bg-gray-50 2xl:px-6 2xl:text-base"
           >
-            <MapPin className="mr-2 inline h-4 w-4" />
+            <MapPin className="mr-2 h-4 w-4" />
             Visit Center
           </a>
         </div>
@@ -107,16 +109,67 @@ export default function Header() {
         <div className="flex items-center gap-2 xl:hidden">
           <a
             href={siteConfig.phoneHref}
-            className="rounded-full bg-green-700 px-4 py-2 text-white"
+            aria-label="Call now"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-green-700 text-white shadow-sm sm:h-11 sm:w-11"
           >
             <Phone size={18} />
           </a>
 
-          <button className="rounded-full border p-2">
-            <Menu size={22} />
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-sm sm:h-11 sm:w-11"
+          >
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </nav>
+
+      {isOpen && (
+        <div className="xl:hidden border-t border-green-100 bg-white px-4 py-4 shadow-lg sm:px-6">
+          <div className="mx-auto grid max-w-2xl gap-2">
+            {navItems.map((item) => {
+              const isActive = activeSection === item.id;
+
+              return (
+                <a
+                  key={item.id}
+                  href={item.link}
+                  onClick={() => setIsOpen(false)}
+                  className={`rounded-2xl px-4 py-3 text-base font-bold transition ${
+                    isActive
+                      ? "bg-green-50 text-green-700"
+                      : "text-slate-700 hover:bg-green-50 hover:text-green-700"
+                  }`}
+                >
+                  {item.title}
+                </a>
+              );
+            })}
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <a
+                href={siteConfig.phoneHref}
+                className="inline-flex items-center justify-center rounded-full bg-green-700 px-5 py-3 font-bold text-white"
+              >
+                <Phone className="mr-2 h-4 w-4" />
+                Call Now
+              </a>
+
+              <a
+                href={siteConfig.mapsHref}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full border border-green-100 bg-white px-5 py-3 font-bold text-slate-800 shadow-sm"
+              >
+                <MapPin className="mr-2 h-4 w-4" />
+                Visit Center
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

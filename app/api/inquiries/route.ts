@@ -8,8 +8,6 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    console.log("API BODY:", body);
-
     const inquiry = await Inquiry.create({
       parentName: body.parentName,
       phone: body.phone,
@@ -19,7 +17,6 @@ export async function POST(req: Request) {
       gender: body.gender,
       concernType: body.concernType,
       preferredDate: body.preferredDate || "",
-      preferredTime: body.preferredTime || "",
       message: body.message || "",
     });
 

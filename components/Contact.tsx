@@ -4,34 +4,31 @@ import { useState } from "react";
 import { concernTypes, siteConfig } from "@/data/site";
 import SectionHeader from "./SectionHeader";
 
-const timeSlots = ["Morning", "Afternoon", "Evening"];
-
 export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-  setLoading(true);
-  setSuccess(false);
+    e.preventDefault();
+    setLoading(true);
+    setSuccess(false);
 
-  const form = e.currentTarget;
-  const formData = new FormData(form);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
-  const payload = {
-    parentName: formData.get("parentName")?.toString() || "",
-    phone: formData.get("phone")?.toString() || "",
-    email: formData.get("email")?.toString() || "",
-    childName: formData.get("childName")?.toString() || "",
-    childAge: formData.get("childAge")?.toString() || "",
-    gender: formData.get("gender")?.toString() || "",
-    concernType: formData.get("concernType")?.toString() || "",
-    preferredDate: formData.get("preferredDate")?.toString() || "",
-    preferredTime: formData.get("preferredTime")?.toString() || "",
-    message: formData.get("message")?.toString() || "",
-  };
+    const payload = {
+      parentName: formData.get("parentName")?.toString() || "",
+      phone: formData.get("phone")?.toString() || "",
+      email: formData.get("email")?.toString() || "",
+      childName: formData.get("childName")?.toString() || "",
+      childAge: formData.get("childAge")?.toString() || "",
+      gender: formData.get("gender")?.toString() || "",
+      concernType: formData.get("concernType")?.toString() || "",
+      preferredDate: formData.get("preferredDate")?.toString() || "",
+      message: formData.get("message")?.toString() || "",
+    };
 
-  const whatsappMessage = `Hello Sanjeevani Rehabilitation Centre,
+    const whatsappMessage = `Hello Sanjeevani Rehabilitation Centre,
 
 I would like to book an appointment.
 
@@ -45,40 +42,39 @@ Gender: ${payload.gender}
 
 Concern Type: ${payload.concernType}
 Preferred Date: ${payload.preferredDate || "Not selected"}
-Preferred Time: ${payload.preferredTime || "Not selected"}
 
 Message:
 ${payload.message || "No message provided"}
 
 Thank you.`;
 
-  try {
-    const res = await fetch("/api/inquiries", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (!res.ok) {
-      throw new Error("Failed to submit inquiry");
+      if (!res.ok) {
+        throw new Error("Failed to submit inquiry");
+      }
+
+      setSuccess(true);
+      form.reset();
+
+      const whatsappUrl = `${siteConfig.whatsappHref.split("?")[0]}?text=${encodeURIComponent(
+        whatsappMessage
+      )}`;
+
+      window.open(whatsappUrl, "_blank");
+    } catch {
+      alert("Something went wrong. Please try again or contact us on WhatsApp.");
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(true);
-    form.reset();
-
-    const whatsappUrl = `${siteConfig.whatsappHref.split("?")[0]}?text=${encodeURIComponent(
-      whatsappMessage
-    )}`;
-
-    window.open(whatsappUrl, "_blank");
-  } catch {
-    alert("Something went wrong. Please try again or contact us on WhatsApp.");
-  } finally {
-    setLoading(false);
   }
-}
 
   return (
     <section id="contact" className="section-padding bg-slate-50">
@@ -289,29 +285,6 @@ Thank you.`;
 
                   <label className="grid gap-2 sm:col-span-2">
                     <span className="font-semibold text-brand-ink">
-                      Preferred Time
-                    </span>
-
-                    <div className="grid gap-3 sm:grid-cols-3">
-                      {timeSlots.map((slot) => (
-                        <label
-                          key={slot}
-                          className="flex cursor-pointer items-center justify-center rounded-2xl border border-slate-200 px-4 py-3 font-semibold text-slate-600 transition hover:border-brand-green hover:bg-green-50"
-                        >
-                          <input
-                            type="radio"
-                            name="preferredTime"
-                            value={slot}
-                            className="mr-2"
-                          />
-                          {slot}
-                        </label>
-                      ))}
-                    </div>
-                  </label>
-
-                  <label className="grid gap-2 sm:col-span-2">
-                    <span className="font-semibold text-brand-ink">
                       Message
                     </span>
                     <textarea
@@ -323,13 +296,13 @@ Thank you.`;
                 </div>
               </div>
 
-          <button
-  type="submit"
-  disabled={loading}
-  className="mt-2 w-full rounded-full bg-green-700 px-6 py-4 text-lg font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-70"
->
-  {loading ? "Submitting..." : "Submit Appointment Request"}
-</button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-2 w-full rounded-full bg-green-700 px-6 py-4 text-lg font-black text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-green-800 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {loading ? "Submitting..." : "Submit Appointment Request"}
+              </button>
             </div>
           </form>
         </div>

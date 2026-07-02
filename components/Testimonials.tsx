@@ -15,7 +15,7 @@ export default function Testimonials() {
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
-            Real parent feedback will be added here after launch.
+            We look forward to sharing genuine experiences from the families we serve.
           </p>
         </div>
 
@@ -37,9 +37,6 @@ export default function Testimonials() {
 
               <div className="mt-6 border-t border-green-100 pt-5">
                 <p className="font-black text-green-900">{item.name}</p>
-                <p className="mt-1 text-sm font-medium text-slate-500">
-                  Parent Feedback
-                </p>
               </div>
             </article>
           ))}
